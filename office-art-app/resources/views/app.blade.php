@@ -7,36 +7,38 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Office Art</title>
     <link rel="stylesheet" href="css/app.css">
+    <script src="js/app.js" defer></script>
 </head>
 
-<body>
+<body x-data>
+<!-- Art frame -->
 <section class="c-frame">
     <!-- Image 1 -->
-    <div class="c-frame__frame">
-        <img id="bg-1" class="c-frame__image c-frame__image--background" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
-        <img id="fg-1" class="c-frame__image c-frame__image--foreground" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
+    <div class="c-frame__frame" id="image-1">
+        <img class="c-frame__image c-frame__image--background" src="" alt="">
+        <img class="c-frame__image c-frame__image--foreground" src="" alt="">
     </div>
 
     <!-- Image 2 -->
-    <div class="c-frame__frame">
-        <img id="bg-2" class="c-frame__image c-frame__image--background" src="https://collectionapi.metmuseum.org/api/collection/v1/iiif/53459/208681/main-image" alt="">
-        <img id="fg-2" class="c-frame__image c-frame__image--foreground" src="https://collectionapi.metmuseum.org/api/collection/v1/iiif/53459/208681/main-image" alt="">
+    <div class="c-frame__frame" id="image-2">
+        <img class="c-frame__image c-frame__image--background" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
+        <img class="c-frame__image c-frame__image--foreground" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
     </div>
 </section>
 
-<aside class="c-info is-visible">
+<!-- Art info -->
+<div class="c-info__trigger" @click="$store.state.toggleSidebar()"></div>
+<aside class="c-info" :class="$store.state.isSidebarOpen && 'is-visible'">
     <h1 class="c-info__title">Wheat Field with Cypresses</h1>
     <p class="c-info__subtitle">
         <time>1889</time>
         | European Art
     </p>
-    <p class="c-info__author">
-        <span class="c-info__author--name">Vincent van Gogh</span>
-        <span class="c-info__author--nationality">Dutch</span>
-    </p>
+    <p class="c-info__author">Vincent van Gogh</p>
 </aside>
 
-<div class="c-loading is-hidden">
+<!-- Loading screen -->
+<div class="c-loading" :class="!$store.state.isLoading && 'is-hidden'">
     <div class="c-loading__spinner">
         <div></div>
         <div></div>
@@ -45,9 +47,10 @@
     </div>
 </div>
 
-<div class="c-alert">
+<!-- Alert box -->
+<div class="c-alert" :class="$store.state.hasError && 'is-visible'">
     <p class="c-alert__title">Error</p>
-    <p class="c-alert__message">Please wait a few moments and try again</p>
+    <p class="c-alert__message">Please wait a few minutes and try again</p>
 </div>
 </body>
 

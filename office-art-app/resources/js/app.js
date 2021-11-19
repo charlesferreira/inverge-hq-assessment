@@ -2,11 +2,14 @@ require('./bootstrap');
 
 import Alpine from 'alpinejs';
 
-Alpine.data('appState', () => ({
+Alpine.store('state', {
     isSidebarOpen: false,
-    isLoading: false,
-    hasError: false
-}));
+    isLoading: true,
+    hasError: true,
+    toggleSidebar() {
+        this.isSidebarOpen = !this.isSidebarOpen;
+    }
+});
 
 window.Alpine = Alpine
 Alpine.start()
