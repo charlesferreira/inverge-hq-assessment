@@ -12,15 +12,19 @@
 <body>
 <section class="c-frame">
     <!-- Image 1 -->
-    <img id="bg-1" class="c-frame__image c-frame__image--background" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
-    <img id="fg-1" class="c-frame__image c-frame__image--foreground" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
+    <div class="c-frame__frame">
+        <img id="bg-1" class="c-frame__image c-frame__image--background" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
+        <img id="fg-1" class="c-frame__image c-frame__image--foreground" src="https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg" alt="">
+    </div>
 
     <!-- Image 2 -->
-    <img id="bg-2" class="c-frame__image c-frame__image--background is-hidden" src="https://collectionapi.metmuseum.org/api/collection/v1/iiif/53459/208681/main-image" alt="">
-    <img id="fg-2" class="c-frame__image c-frame__image--foreground is-hidden" src="https://collectionapi.metmuseum.org/api/collection/v1/iiif/53459/208681/main-image" alt="">
+    <div class="c-frame__frame">
+        <img id="bg-2" class="c-frame__image c-frame__image--background" src="https://collectionapi.metmuseum.org/api/collection/v1/iiif/53459/208681/main-image" alt="">
+        <img id="fg-2" class="c-frame__image c-frame__image--foreground" src="https://collectionapi.metmuseum.org/api/collection/v1/iiif/53459/208681/main-image" alt="">
+    </div>
 </section>
 
-<aside class="c-info is-hidden">
+<aside class="c-info is-visible">
     <h1 class="c-info__title">Wheat Field with Cypresses</h1>
     <p class="c-info__subtitle">
         <time>1889</time>
@@ -31,6 +35,15 @@
         <span class="c-info__author--nationality">Dutch</span>
     </p>
 </aside>
+
+<div class="c-loading is-hidden">
+    <div class="c-loading__spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
 </body>
 
 </html>

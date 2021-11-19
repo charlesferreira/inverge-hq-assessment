@@ -13,4 +13,5 @@ const mix = require('laravel-mix');
 
 mix.browserSync('http://localhost:8000')
     .js('resources/js/app.js', 'public/js')
-    .sass('resources/css/app.scss', 'public/css');
+    .sass('resources/css/app.scss', 'public/css')
+    .disableSuccessNotifications();
