@@ -9,7 +9,7 @@ class ObjectsController extends Controller
     /**
      * @var MetMuseumAPIService
      */
-    private $service;
+    private MetMuseumAPIService $service;
 
     /**
      * @param MetMuseumAPIService $service
@@ -20,12 +20,22 @@ class ObjectsController extends Controller
 
     /**
      * Fetches a listing of all valid Object IDs available for access at the
-     * Metropolitan Museum of Art Collection API
+     * Metropolitan Museum of Art Collection API.
      *
-     * @param MetMuseumAPIService $service
      * @return array
      */
-    public function index() {
-        return $this->service->objects();
+    public function index(): array {
+        return $this->service->objects()->toArray();
+    }
+
+    /**
+     * Fetches the details for a given object using Metropolitan Museum of Art
+     * Collection API.
+     *
+     * @param $id
+     * @return array
+     */
+    public function show($id): array {
+        return $this->service->object($id)->toArray();
     }
 }
