@@ -5347,11 +5347,21 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('state', {
   isSidebarOpen: false,
-  isLoading: true,
-  hasError: true,
+  isLoading: false,
+  hasError: false,
   toggleSidebar: function toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
+});
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('gallery', {
+  objects: [{
+    title: 'Wheat Field with Cypresses',
+    date: '1889',
+    department: 'European Paintings',
+    artist: 'Vincent van Gogh',
+    imageUrl: 'https://images.metmuseum.org/CRDImages/ep/original/DT1567.jpg'
+  }],
+  displayingObjectIndex: 0
 });
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
