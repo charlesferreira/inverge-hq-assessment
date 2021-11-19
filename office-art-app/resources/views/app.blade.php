@@ -44,6 +44,11 @@
         <div></div>
     </div>
 </div>
+
+<div class="c-alert">
+    <p class="c-alert__title">Error</p>
+    <p class="c-alert__message">Please wait a few moments and try again</p>
+</div>
 </body>
 
 </html>

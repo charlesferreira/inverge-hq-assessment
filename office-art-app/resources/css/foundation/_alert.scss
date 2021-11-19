@@ -1,0 +1,34 @@
+.c-alert {
+    --spinner-size: 100px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+    background-color: black;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &.is-visible {
+        display: flex;
+    }
+
+    &__title {
+        margin-bottom: 1rem;
+        font-size: 3.5rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+    }
+
+    &__message {
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: white;
+    }
+}
