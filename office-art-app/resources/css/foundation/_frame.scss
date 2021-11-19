@@ -8,6 +8,10 @@
     height: 100%;
     overflow: hidden;
 
+    .is-hidden {
+        opacity: 0;
+    }
+
     &__image {
         position: absolute;
         z-index: 1;
