@@ -10,51 +10,52 @@
     <script src="js/app.js" defer></script>
 </head>
 
-<body x-data>
-<!-- Art frame -->
-<template x-if="!$store.state.isLoading && $store.gallery.objects.length > 0">
-    <section class="c-frame" x-data="$store.gallery">
-        <template x-for="(object, index) in $store.gallery.objects">
-            <div class="c-frame__frame" x-data="object" :id="'image-' + index" :class="displayingObjectIndex !== index && 'is-hidden'">
-                <img class="c-frame__image c-frame__image--background" :src="imageUrl" :alt="title">
-                <img class="c-frame__image c-frame__image--foreground" :src="imageUrl" :alt="title">
-            </div>
-        </template>
-    </section>
-</template>
+<body x-data="appState" x-init="loadObjects">
+    <!-- Art frame -->
+    <template x-if="!$store.isLoading && objects.length > 0">
+        <section class="c-frame">
+            <template x-for="(object, index) in objects">
+                <div class="c-frame__frame" x-data="object" :id="'image-' + index" :class="displayingObjectIndex !== index && 'is-hidden'">
+                    <img class="c-frame__image c-frame__image--background" :src="imageUrl" :alt="title">
+                    <img class="c-frame__image c-frame__image--foreground" :src="imageUrl" :alt="title">
+                </div>
+            </template>
+        </section>
+        </section>
+    </template>
 
-<!-- Art info -->
-<div class="c-info__trigger" @click="$store.state.toggleSidebar()"></div>
-<template x-if="!$store.state.isLoading && $store.gallery.objects.length > 0">
-    <aside class="c-info" :class="$store.state.isSidebarOpen && 'is-visible'" x-data="{object: $store.gallery.objects[$store.gallery.displayingObjectIndex]}">
-        <h1 class="c-info__title" x-text="object.title"></h1>
-        <p class="c-info__subtitle">
-            <time x-text="object.date">1889</time>
-            | <span x-text="object.department"></span>
-        </p>
-        <template x-if="object.artist">
-            <p class="c-info__author" x-text="object.artist"></p>
-        </template>
-    </aside>
-</template>
+    <!-- Art info -->
+    <div class="c-info__trigger" @click="$store.sidebar.toggle()"></div>
+    <template x-if="!$store.isLoading && objects.length > 0">
+        <aside class="c-info" :class="$store.sidebar.isOpen && 'is-visible'">
+            <h1 class="c-info__title" x-text="displayingObject.title"></h1>
+            <p class="c-info__subtitle">
+                <time x-text="displayingObject.date">1889</time>
+                | <span x-text="displayingObject.department"></span>
+            </p>
+            <template x-if="displayingObject.artist">
+                <p class="c-info__author" x-text="displayingObject.artist"></p>
+            </template>
+        </aside>
+    </template>
 
-<!-- Loading screen -->
-<div class="c-loading" :class="!$store.state.isLoading && 'is-hidden'">
-    <div class="c-loading__spinner">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+    <!-- Loading screen -->
+    <div class="c-loading" :class="!$store.isLoading && 'is-hidden'">
+        <div class="c-loading__spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
-</div>
 
-<!-- Alert box -->
-<template x-if="$store.state.hasError">
-    <div class="c-alert">
-        <p class="c-alert__title">Error</p>
-        <p class="c-alert__message">Please wait a few minutes and try again</p>
-    </div>
-</template>
+    <!-- Alert box -->
+    <template x-if="$store.errors.hasError">
+        <div class="c-alert">
+            <p class="c-alert__title">Error</p>
+            <p class="c-alert__message">Please wait a few minutes and try again</p>
+        </div>
+    </template>
 </body>
 
 </html>
