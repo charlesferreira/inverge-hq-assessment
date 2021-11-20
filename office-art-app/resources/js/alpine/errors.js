@@ -1,3 +1,7 @@
 export const errors = {
-    hasError: false
+    hasError: false,
+    error(...message) {
+        console.error(...message);
+        this.hasError = true;
+    }
 }

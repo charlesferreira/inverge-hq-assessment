@@ -10,12 +10,12 @@
     <script src="js/app.js" defer></script>
 </head>
 
-<body x-data="appState" x-init="loadObjects">
+<body x-data="appState">
     <!-- Art frame -->
     <template x-if="!$store.isLoading && objects.length > 0">
         <section class="c-frame">
             <template x-for="(object, index) in objects">
-                <div class="c-frame__frame" x-data="object" :id="'image-' + index" :class="displayingObjectIndex !== index && 'is-hidden'">
+                <div class="c-frame__frame" x-data="object" :id="'image-' + index" :class="displayingBufferIndex !== index && 'is-hidden'">
                     <img class="c-frame__image c-frame__image--background" :src="imageUrl" :alt="title">
                     <img class="c-frame__image c-frame__image--foreground" :src="imageUrl" :alt="title">
                 </div>

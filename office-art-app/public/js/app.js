@@ -5365,34 +5365,77 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var appState = function appState() {
   return {
-    hasError: false,
     objectIDs: [],
     objects: [],
     displayingObjectIndex: 0,
+    displayingBufferIndex: -1,
+    numberOfBuffers: 2,
 
+    /**
+     * Gets current object being displayed on screen
+     * @returns {*|{}}
+     */
     get displayingObject() {
       return this.objects[this.displayingObjectIndex] || {};
     },
 
+    /**
+     * Gets the next buffer index to display the image on screen
+     */
+    get nextBufferIndex() {
+      return (this.displayingBufferIndex + 1) % this.numberOfBuffers;
+    },
+
+    /**
+     * Toggles sidebar visibility
+     */
     toggleSidebar: function toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
-    loadObjects: function loadObjects() {
+
+    /**
+     * Loads the object list from the server and quickstarts the app
+     * @returns {Promise<void>}
+     */
+    init: function init() {
+      var _this = this;
+
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var response, data;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                fetch('/api/objects').then(function (data) {
-                  return data.json();
-                }).then(function (data) {
-                  console.log('Successfully fetched objects', data);
-                })["catch"](function (error) {
-                  Alpine.store('errors').hasError = true;
-                  console.log('Error fetching objects', error.message);
-                });
+                _context.next = 2;
+                return fetch('/api/objects');
 
-              case 1:
+              case 2:
+                response = _context.sent;
+
+                if (response.ok) {
+                  _context.next = 5;
+                  break;
+                }
+
+                return _context.abrupt("return", Alpine.store('errors').error('Error fetching object list:', "".concat(response.status, " (").concat(response.statusText, ")")));
+
+              case 5:
+                _context.next = 7;
+                return response.json();
+
+              case 7:
+                data = _context.sent;
+                _this.objectIDs = data.objectIDs; // find next image and starts the timer
+
+                _context.next = 11;
+                return _this.loadNextImage();
+
+              case 11:
+                _this.swapBuffers();
+
+                Alpine.store('isLoading', false);
+
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -5400,19 +5443,110 @@ var appState = function appState() {
         }, _callee);
       }))();
     },
-    prefetchImage: function prefetchImage() {// ...
+
+    /**
+     * Loads the next object until find one that has an image, then makes it ready for swapping
+     * @returns {Promise<void>}
+     */
+    loadNextImage: function loadNextImage() {
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var nextObject, randomObjectIndex, response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                if (false) {}
+
+                // randomize next object
+                randomObjectIndex = Math.floor(Math.random() * _this2.objectIDs.length); // try to load next object
+
+                _context2.next = 4;
+                return fetch("/api/objects/".concat(_this2.objectIDs[randomObjectIndex]));
+
+              case 4:
+                response = _context2.sent;
+
+                if (response.ok) {
+                  _context2.next = 7;
+                  break;
+                }
+
+                return _context2.abrupt("return", Alpine.store('errors').error('Error fetching object:', "".concat(response.status, " (").concat(response.statusText, ")")));
+
+              case 7:
+                _context2.next = 9;
+                return response.json();
+
+              case 9:
+                nextObject = _context2.sent;
+
+                if (!nextObject.imageUrl) {
+                  _context2.next = 12;
+                  break;
+                }
+
+                return _context2.abrupt("break", 16);
+
+              case 12:
+                _context2.next = 14;
+                return new Promise(function (resolve) {
+                  return setTimeout(resolve, 500);
+                });
+
+              case 14:
+                _context2.next = 0;
+                break;
+
+              case 16:
+                // save next object and prefetch its image
+                _this2.objects[_this2.nextBufferIndex] = nextObject;
+                return _context2.abrupt("return", _this2.prefetchNextImage());
+
+              case 18:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
       }))();
+    },
+
+    /**
+     * Makes a promise to prefetch the next image
+     */
+    prefetchNextImage: function prefetchNextImage() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                return _context3.abrupt("return", new Promise(function (resolve) {
+                  var nextObject = _this3.objects[_this3.nextBufferIndex];
+                  var image = new Image();
+                  image.onload = resolve;
+                  image.src = nextObject.imageUrl;
+                }));
+
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+
+    /**
+     * Swaps the currently displayed image and resets the timer
+     */
+    swapBuffers: function swapBuffers() {
+      this.displayingBufferIndex = this.nextBufferIndex;
+      this.displayingObjectIndex = this.objects[this.displayingBufferIndex].id;
+      this.loadNextImage();
     }
   };
 };
@@ -5431,7 +5565,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "errors": () => (/* binding */ errors)
 /* harmony export */ });
 var errors = {
-  hasError: false
+  hasError: false,
+  error: function error() {
+    var _console;
+
+    (_console = console).error.apply(_console, arguments);
+
+    this.hasError = true;
+  }
 };
 
 /***/ }),
