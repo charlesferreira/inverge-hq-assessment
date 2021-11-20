@@ -24,7 +24,7 @@ class DepartmentsController extends Controller
      * @return array
      */
     public function index(): array {
-        return $this->service->departments()->toArray();
+        return $this->service->departments()->departments;
     }
 
     /**

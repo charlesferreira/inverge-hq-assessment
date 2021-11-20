@@ -15,12 +15,11 @@ class DepartmentsControllerTest extends TestCase
      * @throws UnknownProperties
      */
     public function test_loading_the_departments_list() {
-        $mockData = new DepartmentList([
-            'departments' => [
-                ['departmentId' => 1, 'displayName' => 'Department 1'],
-                ['departmentId' => 2, 'displayName' => 'Department 2']
-            ]
-        ]);
+        $departments = [
+            ['departmentId' => 1, 'displayName' => 'Department 1'],
+            ['departmentId' => 2, 'displayName' => 'Department 2']
+        ];
+        $mockData = new DepartmentList(compact('departments'));
 
         $this->mock(MetMuseumAPIService::class, function (MockInterface $mock) use ($mockData) {
             $mock->shouldReceive('departments')->once()->andReturn($mockData);
@@ -29,6 +28,6 @@ class DepartmentsControllerTest extends TestCase
         $response = $this->get('/api/departments');
 
         $response->assertStatus(200);
-        $response->assertJsonStructure(array_keys($mockData->toArray()));
+        $response->assertJsonStructure(array_keys($departments));
     }
 }
