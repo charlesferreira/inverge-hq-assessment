@@ -14,9 +14,10 @@ interface MetMuseumAPIService
     /**
      * Returns a listing of all valid Object IDs available for access.
      *
+     * @param int $departmentId
      * @return ArtObjectList
      */
-    public function objects(): ArtObjectList;
+    public function objects(int $departmentId): ArtObjectList;
 
     /**
      * Returns a record for an object, containing all open access data about

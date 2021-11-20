@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Service\MetMuseumAPIService;
+use Illuminate\Http\Request;
 
 class ObjectsController extends Controller
 {
@@ -22,10 +23,13 @@ class ObjectsController extends Controller
      * Fetches a listing of all valid Object IDs available for access at the
      * Metropolitan Museum of Art Collection API.
      *
+     * @param Request $request
      * @return array
      */
-    public function index(): array {
-        return $this->service->objects()->toArray();
+    public function index(Request $request): array {
+        $departmentId = $request->get('departmentId');
+
+        return $this->service->objects($departmentId)->toArray();
     }
 
     /**

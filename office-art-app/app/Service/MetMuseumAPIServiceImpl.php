@@ -24,11 +24,12 @@ class MetMuseumAPIServiceImpl implements MetMuseumAPIService
     }
 
     /**
+     * @param int $departmentId
      * @return ArtObjectList
-     * @throws UnknownProperties|GuzzleException
+     * @throws GuzzleException|UnknownProperties
      */
-    public function objects(): ArtObjectList {
-        return new ArtObjectList($this->fetch('/objects'));
+    public function objects(int $departmentId): ArtObjectList {
+        return new ArtObjectList($this->fetch('/objects?departmentIds=' . $departmentId));
     }
 
     /**

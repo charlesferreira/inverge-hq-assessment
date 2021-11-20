@@ -16,16 +16,17 @@ class ObjectsControllerTest extends TestCase
      * @throws UnknownProperties
      */
     public function test_loading_the_object_list() {
+        $departmentId = 1;
         $mockData = new ArtObjectList([
             'total' => 3,
             'objectIDs' => [1, 2, 3]
         ]);
 
-        $this->mock(MetMuseumAPIService::class, function (MockInterface $mock) use ($mockData) {
-            $mock->shouldReceive('objects')->once()->andReturn($mockData);
+        $this->mock(MetMuseumAPIService::class, function (MockInterface $mock) use ($mockData, $departmentId) {
+            $mock->shouldReceive('objects')->with($departmentId)->once()->andReturn($mockData);
         });
 
-        $response = $this->get('/api/objects');
+        $response = $this->get('/api/objects?departmentId=' . $departmentId);
 
         $response->assertStatus(200);
         $response->assertJsonStructure(array_keys($mockData->toArray()));
