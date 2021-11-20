@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Models\DTO\ArtObject;
 use App\Models\DTO\ArtObjectList;
+use App\Models\DTO\DepartmentList;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
@@ -37,6 +38,14 @@ class MetMuseumAPIServiceImpl implements MetMuseumAPIService
      */
     public function object(int $id): ArtObject {
         return new ArtObject($this->fetch('/objects/' . $id));
+    }
+
+    /**
+     * @return DepartmentList
+     * @throws UnknownProperties|GuzzleException
+     */
+    public function departments(): DepartmentList {
+        return new DepartmentList($this->fetch('/departments'));
     }
 
     /**

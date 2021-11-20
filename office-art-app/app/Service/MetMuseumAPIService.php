@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Models\DTO\ArtObject;
 use App\Models\DTO\ArtObjectList;
+use App\Models\DTO\DepartmentList;
 
 /**
  * Provides abstraction over the Metropolitan Museum of Art Collection API.
@@ -25,4 +26,11 @@ interface MetMuseumAPIService
      * @return ArtObject
      */
     public function object(int $id): ArtObject;
+
+    /**
+     * Returns a listing of all departments.
+     *
+     * @return mixed
+     */
+    public function departments(): DepartmentList;
 }
