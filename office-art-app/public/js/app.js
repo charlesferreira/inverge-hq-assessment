@@ -5344,6 +5344,82 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./resources/js/alpine/departments.js":
+/*!********************************************!*\
+  !*** ./resources/js/alpine/departments.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "departments": () => (/* binding */ departments)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var departments = {
+  departments: [],
+  displayingDepartmentId: null,
+
+  /**
+   * Gets the current department being displayed
+   */
+  get displayingDepartment() {
+    return this.objects[this.displayingBufferIndex];
+  },
+
+  /**
+   * Loads the departments list
+   */
+  loadDepartments: function loadDepartments() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return fetch('/api/departments');
+
+            case 2:
+              response = _context.sent;
+
+              if (response.ok) {
+                _context.next = 5;
+                break;
+              }
+
+              return _context.abrupt("return", Alpine.store('errors').error('Error fetching departments list:', "".concat(response.status, " (").concat(response.statusText, ")")));
+
+            case 5:
+              _context.next = 7;
+              return response.json();
+
+            case 7:
+              _this.departments = _context.sent;
+              // set a random department to be displayed
+              _this.displayingDepartmentId = _this.departments[Math.floor(Math.random() * _this.departments.length)].id;
+
+            case 9:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  }
+};
+
+/***/ }),
+
 /***/ "./resources/js/alpine/errors.js":
 /*!***************************************!*\
   !*** ./resources/js/alpine/errors.js ***!
@@ -5396,7 +5472,7 @@ var objects = {
   /**
    * number of buffers to prefetch images
    */
-  numberOfBuffers: 2,
+  numberOfBuffers: 3,
 
   /**
    * Gets the current object being displayed
@@ -5426,44 +5502,50 @@ var objects = {
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-      var response, data;
+      var departmentId, response, data;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return fetch('/api/objects');
+              return Alpine.store('departments').loadDepartments();
 
             case 2:
+              departmentId = Alpine.store('departments').displayingDepartmentId; // try to load the object list
+
+              _context.next = 5;
+              return fetch("/api/objects?departmentId=".concat(departmentId));
+
+            case 5:
               response = _context.sent;
 
               if (response.ok) {
-                _context.next = 5;
+                _context.next = 8;
                 break;
               }
 
               return _context.abrupt("return", Alpine.store('errors').error('Error fetching object list:', "".concat(response.status, " (").concat(response.statusText, ")")));
 
-            case 5:
-              _context.next = 7;
+            case 8:
+              _context.next = 10;
               return response.json();
 
-            case 7:
+            case 10:
               data = _context.sent;
               _this.objectIDs = data.objectIDs; // find next image and starts the timer
 
-              _context.next = 11;
+              _context.next = 14;
               return _this.loadNextImage();
 
-            case 11:
-              _context.next = 13;
+            case 14:
+              _context.next = 16;
               return _this.swapBuffers();
 
-            case 13:
+            case 16:
               Alpine.store('isLoading', false);
               Alpine.store('timer').start();
 
-            case 15:
+            case 18:
             case "end":
               return _context.stop();
           }
@@ -5698,10 +5780,12 @@ var timer = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
-/* harmony import */ var _alpine_errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine/errors */ "./resources/js/alpine/errors.js");
-/* harmony import */ var _alpine_objects__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine/objects */ "./resources/js/alpine/objects.js");
-/* harmony import */ var _alpine_sidebar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine/sidebar */ "./resources/js/alpine/sidebar.js");
-/* harmony import */ var _alpine_timer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine/timer */ "./resources/js/alpine/timer.js");
+/* harmony import */ var _alpine_departments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine/departments */ "./resources/js/alpine/departments.js");
+/* harmony import */ var _alpine_errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine/errors */ "./resources/js/alpine/errors.js");
+/* harmony import */ var _alpine_objects__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine/objects */ "./resources/js/alpine/objects.js");
+/* harmony import */ var _alpine_sidebar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine/sidebar */ "./resources/js/alpine/sidebar.js");
+/* harmony import */ var _alpine_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine/timer */ "./resources/js/alpine/timer.js");
+
 
 
 
@@ -5711,10 +5795,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('isLoading', true);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('sidebar', _alpine_sidebar__WEBPACK_IMPORTED_MODULE_3__.sidebar);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('errors', _alpine_errors__WEBPACK_IMPORTED_MODULE_1__.errors);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('timer', _alpine_timer__WEBPACK_IMPORTED_MODULE_4__.timer);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('objects', _alpine_objects__WEBPACK_IMPORTED_MODULE_2__.objects);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('sidebar', _alpine_sidebar__WEBPACK_IMPORTED_MODULE_4__.sidebar);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('errors', _alpine_errors__WEBPACK_IMPORTED_MODULE_2__.errors);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('timer', _alpine_timer__WEBPACK_IMPORTED_MODULE_5__.timer);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('departments', _alpine_departments__WEBPACK_IMPORTED_MODULE_1__.departments);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('objects', _alpine_objects__WEBPACK_IMPORTED_MODULE_3__.objects);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

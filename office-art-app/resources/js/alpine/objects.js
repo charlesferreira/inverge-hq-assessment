@@ -7,7 +7,7 @@ export const objects = {
     /**
      * number of buffers to prefetch images
      */
-    numberOfBuffers: 2,
+    numberOfBuffers: 3,
 
     /**
      * Gets the current object being displayed
@@ -34,8 +34,12 @@ export const objects = {
      * Loads the object list from the server and quickstarts the app
      */
     async initializeApp() {
+        // start loading the departments list
+        await Alpine.store('departments').loadDepartments();
+        const departmentId = Alpine.store('departments').displayingDepartmentId;
+
         // try to load the object list
-        const response = await fetch('/api/objects');
+        const response = await fetch(`/api/objects?departmentId=${departmentId}`);
 
         if (!response.ok) {
             return Alpine.store('errors').error('Error fetching object list:', `${response.status} (${response.statusText})`);
