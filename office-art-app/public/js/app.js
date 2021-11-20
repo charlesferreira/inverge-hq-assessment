@@ -5344,215 +5344,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./resources/js/alpine/app-state.js":
-/*!******************************************!*\
-  !*** ./resources/js/alpine/app-state.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "appState": () => (/* binding */ appState)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-var appState = function appState() {
-  return {
-    objectIDs: [],
-    objects: [],
-    displayingObjectIndex: 0,
-    displayingBufferIndex: -1,
-    numberOfBuffers: 2,
-
-    /**
-     * Gets current object being displayed on screen
-     * @returns {*|{}}
-     */
-    get displayingObject() {
-      return this.objects[this.displayingObjectIndex] || {};
-    },
-
-    /**
-     * Gets the next buffer index to display the image on screen
-     */
-    get nextBufferIndex() {
-      return (this.displayingBufferIndex + 1) % this.numberOfBuffers;
-    },
-
-    /**
-     * Toggles sidebar visibility
-     */
-    toggleSidebar: function toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    },
-
-    /**
-     * Loads the object list from the server and quickstarts the app
-     * @returns {Promise<void>}
-     */
-    init: function init() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var response, data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return fetch('/api/objects');
-
-              case 2:
-                response = _context.sent;
-
-                if (response.ok) {
-                  _context.next = 5;
-                  break;
-                }
-
-                return _context.abrupt("return", Alpine.store('errors').error('Error fetching object list:', "".concat(response.status, " (").concat(response.statusText, ")")));
-
-              case 5:
-                _context.next = 7;
-                return response.json();
-
-              case 7:
-                data = _context.sent;
-                _this.objectIDs = data.objectIDs; // find next image and starts the timer
-
-                _context.next = 11;
-                return _this.loadNextImage();
-
-              case 11:
-                _this.swapBuffers();
-
-                Alpine.store('isLoading', false);
-
-              case 13:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-
-    /**
-     * Loads the next object until find one that has an image, then makes it ready for swapping
-     * @returns {Promise<void>}
-     */
-    loadNextImage: function loadNextImage() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var nextObject, randomObjectIndex, response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (false) {}
-
-                // randomize next object
-                randomObjectIndex = Math.floor(Math.random() * _this2.objectIDs.length); // try to load next object
-
-                _context2.next = 4;
-                return fetch("/api/objects/".concat(_this2.objectIDs[randomObjectIndex]));
-
-              case 4:
-                response = _context2.sent;
-
-                if (response.ok) {
-                  _context2.next = 7;
-                  break;
-                }
-
-                return _context2.abrupt("return", Alpine.store('errors').error('Error fetching object:', "".concat(response.status, " (").concat(response.statusText, ")")));
-
-              case 7:
-                _context2.next = 9;
-                return response.json();
-
-              case 9:
-                nextObject = _context2.sent;
-
-                if (!nextObject.imageUrl) {
-                  _context2.next = 12;
-                  break;
-                }
-
-                return _context2.abrupt("break", 16);
-
-              case 12:
-                _context2.next = 14;
-                return new Promise(function (resolve) {
-                  return setTimeout(resolve, 500);
-                });
-
-              case 14:
-                _context2.next = 0;
-                break;
-
-              case 16:
-                // save next object and prefetch its image
-                _this2.objects[_this2.nextBufferIndex] = nextObject;
-                return _context2.abrupt("return", _this2.prefetchNextImage());
-
-              case 18:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-
-    /**
-     * Makes a promise to prefetch the next image
-     */
-    prefetchNextImage: function prefetchNextImage() {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                return _context3.abrupt("return", new Promise(function (resolve) {
-                  var nextObject = _this3.objects[_this3.nextBufferIndex];
-                  var image = new Image();
-                  image.onload = resolve;
-                  image.src = nextObject.imageUrl;
-                }));
-
-              case 1:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-
-    /**
-     * Swaps the currently displayed image and resets the timer
-     */
-    swapBuffers: function swapBuffers() {
-      this.displayingBufferIndex = this.nextBufferIndex;
-      this.displayingObjectIndex = this.objects[this.displayingBufferIndex].id;
-      this.loadNextImage();
-    }
-  };
-};
-
-/***/ }),
-
 /***/ "./resources/js/alpine/errors.js":
 /*!***************************************!*\
   !*** ./resources/js/alpine/errors.js ***!
@@ -5577,6 +5368,244 @@ var errors = {
 
 /***/ }),
 
+/***/ "./resources/js/alpine/objects.js":
+/*!****************************************!*\
+  !*** ./resources/js/alpine/objects.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "objects": () => (/* binding */ objects)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var objects = {
+  objectIDs: [],
+  objects: [],
+  displayingObjectIndex: -1,
+  displayingBufferIndex: -1,
+
+  /**
+   * number of buffers to prefetch images
+   */
+  numberOfBuffers: 2,
+
+  /**
+   * Gets the current object being displayed
+   */
+  get displayingObject() {
+    return this.objects[this.displayingBufferIndex];
+  },
+
+  /**
+   * Gets the next buffer index to display the image on screen
+   */
+  get nextBufferIndex() {
+    return (this.displayingBufferIndex + 1) % this.numberOfBuffers;
+  },
+
+  /**
+   * Toggles sidebar visibility
+   */
+  toggleSidebar: function toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  },
+
+  /**
+   * Loads the object list from the server and quickstarts the app
+   */
+  initializeApp: function initializeApp() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      var response, data;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return fetch('/api/objects');
+
+            case 2:
+              response = _context.sent;
+
+              if (response.ok) {
+                _context.next = 5;
+                break;
+              }
+
+              return _context.abrupt("return", Alpine.store('errors').error('Error fetching object list:', "".concat(response.status, " (").concat(response.statusText, ")")));
+
+            case 5:
+              _context.next = 7;
+              return response.json();
+
+            case 7:
+              data = _context.sent;
+              _this.objectIDs = data.objectIDs; // find next image and starts the timer
+
+              _context.next = 11;
+              return _this.loadNextImage();
+
+            case 11:
+              _context.next = 13;
+              return _this.swapBuffers();
+
+            case 13:
+              Alpine.store('isLoading', false);
+              Alpine.store('timer').start();
+
+            case 15:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+
+  /**
+   * Loads the next object until find one that has an image, then makes it ready for swapping
+   */
+  loadNextImage: function loadNextImage() {
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+      var nextObject, randomObjectIndex, response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              if (false) {}
+
+              // randomize next object
+              randomObjectIndex = Math.floor(Math.random() * _this2.objectIDs.length); // try to load next object
+
+              _context2.next = 4;
+              return fetch("/api/objects/".concat(_this2.objectIDs[randomObjectIndex]));
+
+            case 4:
+              response = _context2.sent;
+
+              if (response.ok) {
+                _context2.next = 7;
+                break;
+              }
+
+              return _context2.abrupt("return", Alpine.store('errors').error('Error fetching object:', "".concat(response.status, " (").concat(response.statusText, ")")));
+
+            case 7:
+              _context2.next = 9;
+              return response.json();
+
+            case 9:
+              nextObject = _context2.sent;
+
+              if (!nextObject.imageUrl) {
+                _context2.next = 12;
+                break;
+              }
+
+              return _context2.abrupt("break", 16);
+
+            case 12:
+              _context2.next = 14;
+              return new Promise(function (resolve) {
+                return setTimeout(resolve, 500);
+              });
+
+            case 14:
+              _context2.next = 0;
+              break;
+
+            case 16:
+              // save next object and prefetch its image
+              _this2.objects[_this2.nextBufferIndex] = nextObject;
+              return _context2.abrupt("return", _this2.prefetchNextImage());
+
+            case 18:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
+  },
+
+  /**
+   * Makes a promise to prefetch the next image
+   */
+  prefetchNextImage: function prefetchNextImage() {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return new Promise(function (resolve) {
+                var nextObject = _this3.objects[_this3.nextBufferIndex];
+                var image = new Image();
+                image.onload = resolve;
+                image.src = nextObject.imageUrl;
+              });
+
+            case 2:
+              return _context3.abrupt("return", _context3.sent);
+
+            case 3:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))();
+  },
+
+  /**
+   * Swaps the currently displayed image and resets the timer
+   */
+  swapBuffers: function swapBuffers() {
+    var _this4 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _this4.displayingBufferIndex = _this4.nextBufferIndex;
+              _this4.displayingObjectIndex = _this4.objects[_this4.displayingBufferIndex].id; // gives a little time for the image to fade
+
+              _context4.next = 4;
+              return new Promise(function (resolve) {
+                return setTimeout(resolve, 1000);
+              });
+
+            case 4:
+              _context4.next = 6;
+              return _this4.loadNextImage();
+
+            case 6:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  }
+};
+
+/***/ }),
+
 /***/ "./resources/js/alpine/sidebar.js":
 /*!****************************************!*\
   !*** ./resources/js/alpine/sidebar.js ***!
@@ -5592,6 +5621,69 @@ var sidebar = {
   isOpen: false,
   toggle: function toggle() {
     this.isOpen = !this.isOpen;
+    this.isOpen ? Alpine.store('timer').pause() : Alpine.store('timer').resume();
+  }
+};
+
+/***/ }),
+
+/***/ "./resources/js/alpine/timer.js":
+/*!**************************************!*\
+  !*** ./resources/js/alpine/timer.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "timer": () => (/* binding */ timer)
+/* harmony export */ });
+var timer = {
+  durationInSeconds: 10,
+  id: null,
+  startTime: null,
+  remainingTime: 0,
+
+  get durationInMilliseconds() {
+    return this.durationInSeconds * 1000;
+  },
+
+  /**
+   * Starts the timer
+   */
+  start: function start() {
+    clearInterval(this.id);
+    this.id = setInterval(this.changeArtwork.bind(this), this.durationInMilliseconds);
+    this.startTime = new Date();
+  },
+
+  /**
+   * Stops the timer
+   */
+  pause: function pause() {
+    clearInterval(this.id);
+    this.remainingTime = this.durationInMilliseconds - (new Date() - this.startTime);
+  },
+
+  /**
+   * Resumes the timer
+   */
+  resume: function resume() {
+    var _this = this;
+
+    this.startTime = new Date();
+    this.id = setInterval(function () {
+      _this.changeArtwork();
+
+      _this.start();
+    }, this.remainingTime);
+  },
+
+  /**
+   * Updates the current artwork
+   */
+  changeArtwork: function changeArtwork() {
+    Alpine.store('objects').swapBuffers();
   }
 };
 
@@ -5606,9 +5698,11 @@ var sidebar = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
-/* harmony import */ var _alpine_sidebar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine/sidebar */ "./resources/js/alpine/sidebar.js");
-/* harmony import */ var _alpine_app_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine/app-state */ "./resources/js/alpine/app-state.js");
-/* harmony import */ var _alpine_errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine/errors */ "./resources/js/alpine/errors.js");
+/* harmony import */ var _alpine_errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine/errors */ "./resources/js/alpine/errors.js");
+/* harmony import */ var _alpine_objects__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine/objects */ "./resources/js/alpine/objects.js");
+/* harmony import */ var _alpine_sidebar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine/sidebar */ "./resources/js/alpine/sidebar.js");
+/* harmony import */ var _alpine_timer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine/timer */ "./resources/js/alpine/timer.js");
+
 
 
 
@@ -5617,9 +5711,10 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('isLoading', true);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('sidebar', _alpine_sidebar__WEBPACK_IMPORTED_MODULE_1__.sidebar);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('errors', _alpine_errors__WEBPACK_IMPORTED_MODULE_3__.errors);
-alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('appState', _alpine_app_state__WEBPACK_IMPORTED_MODULE_2__.appState);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('sidebar', _alpine_sidebar__WEBPACK_IMPORTED_MODULE_3__.sidebar);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('errors', _alpine_errors__WEBPACK_IMPORTED_MODULE_1__.errors);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('timer', _alpine_timer__WEBPACK_IMPORTED_MODULE_4__.timer);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('objects', _alpine_objects__WEBPACK_IMPORTED_MODULE_2__.objects);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

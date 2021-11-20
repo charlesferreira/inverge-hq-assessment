@@ -1,16 +1,19 @@
-export const appState = () => ({
+export const objects = {
     objectIDs: [],
     objects: [],
-    displayingObjectIndex: 0,
+    displayingObjectIndex: -1,
     displayingBufferIndex: -1,
+
+    /**
+     * number of buffers to prefetch images
+     */
     numberOfBuffers: 2,
 
     /**
-     * Gets current object being displayed on screen
-     * @returns {*|{}}
+     * Gets the current object being displayed
      */
     get displayingObject() {
-        return this.objects[this.displayingObjectIndex] || {}
+        return this.objects[this.displayingBufferIndex];
     },
 
     /**
@@ -29,9 +32,8 @@ export const appState = () => ({
 
     /**
      * Loads the object list from the server and quickstarts the app
-     * @returns {Promise<void>}
      */
-    async init() {
+    async initializeApp() {
         // try to load the object list
         const response = await fetch('/api/objects');
 
@@ -44,13 +46,13 @@ export const appState = () => ({
 
         // find next image and starts the timer
         await this.loadNextImage();
-        this.swapBuffers();
+        await this.swapBuffers();
         Alpine.store('isLoading', false);
+        Alpine.store('timer').start();
     },
 
     /**
      * Loads the next object until find one that has an image, then makes it ready for swapping
-     * @returns {Promise<void>}
      */
     async loadNextImage() {
         let nextObject;
@@ -71,7 +73,7 @@ export const appState = () => ({
                 break;
             }
 
-            // if we got here, the object has no image, so we need to try again
+            // if we got here, the object has no image, so we need to try again,
             // but let's sleep for a bit to avoid hammering the server
             await new Promise(resolve => setTimeout(resolve, 500));
         }
@@ -86,7 +88,7 @@ export const appState = () => ({
      * Makes a promise to prefetch the next image
      */
     async prefetchNextImage() {
-        return new Promise(resolve => {
+        return await new Promise(resolve => {
             const nextObject = this.objects[this.nextBufferIndex];
             const image = new Image();
             image.onload = resolve;
@@ -97,9 +99,13 @@ export const appState = () => ({
     /**
      * Swaps the currently displayed image and resets the timer
      */
-    swapBuffers() {
+    async swapBuffers() {
         this.displayingBufferIndex = this.nextBufferIndex;
         this.displayingObjectIndex = this.objects[this.displayingBufferIndex].id;
-        this.loadNextImage();
+
+        // gives a little time for the image to fade
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        await this.loadNextImage();
     },
-})
+}
